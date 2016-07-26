@@ -1,8 +1,8 @@
 # export ignore
-Makefile        export-ignore 
-.gitignore      export-ignore 
-.gitattributes  export-ignore 
-dev             export-ignore 
+Makefile        export-ignore
+.gitignore      export-ignore
+.gitattributes  export-ignore
+dev             export-ignore
 API.md		export-ignore
 README.md	export-ignore
 CHANGELOG.txt	export-ignore
