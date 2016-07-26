@@ -1,5 +1,5 @@
 --
--- 海鳗插件：秘密/Secret（来自身边朋友的秘密，匿名空间……）
+-- 海鰻插件：秘密/Secret（來自身邊朋友的秘密，匿名空間……）
 --
 HM_Secret = {
 	bShowButton = true,
@@ -7,7 +7,7 @@ HM_Secret = {
 HM.RegisterCustomData("HM_Secret")
 
 ---------------------------------------------------------------------
--- 本地函数和变量
+-- 本地函數和變量
 ---------------------------------------------------------------------
 local _HM_Secret = {
 	szName = "秘密/Secret",
@@ -20,17 +20,17 @@ _HM_Secret.FormatTime = function(nTime)
 	local nNow = GetCurrentTime()
 	nTime = nNow - (tonumber(nTime) or nNow)
 	if nTime < 60 then
-		return "刚刚"
+		return "剛剛"
 	elseif nTime < 3600 then
-		return string.format("%d分钟前", nTime / 60)
+		return string.format("%d分鐘前", nTime / 60)
 	elseif nTime < 86400 then
-		return string.format("%d小时前", nTime / 3600)
+		return string.format("%d小時前", nTime / 3600)
 	else
 		return string.format("%d天前", nTime / 86400)
 	end
 end
 
--- 解码整个 table
+-- 解碼整個 table
 _HM_Secret.TableDecode = function(t)
 	if type(t) == "table" then
 		for k, v in pairs(t) do
@@ -43,7 +43,7 @@ _HM_Secret.TableDecode = function(t)
 	end
 end
 
--- 远程请求并解析 urlencoed-JSON，出错时自动弹 alert
+-- 遠程請求幷解析 urlencoed-JSON，出錯時自動彈 alert
 _HM_Secret.RemoteCall = function(szAction, tParam, fnCallback)
 	local t = {}
 	for k, v in pairs(tParam) do
@@ -54,11 +54,11 @@ _HM_Secret.RemoteCall = function(szAction, tParam, fnCallback)
 		if fnCallback and szContent and szContent ~= "" then
 			local data, err = HM.JsonDecode(szContent)
 			if not data then
-				--HM.Alert("解析 JSON 数据错误：" .. tostring(err), fnCallback)
-				HM.Sysmsg("解析 JSON 数据错误：" .. tostring(err))
+				--HM.Alert("解析 JSON 數據錯誤：" .. tostring(err), fnCallback)
+				HM.Sysmsg("解析 JSON 數據錯誤：" .. tostring(err))
 			elseif type(data) == "table" and data.error then
-				--HM.Alert("服务端出错：" .. HM.UrlDecode(data.error), fnCallback)
-				HM.Sysmsg("插件服务端出错：" .. HM.UrlDecode(data.error))
+				--HM.Alert("服務端出錯：" .. HM.UrlDecode(data.error), fnCallback)
+				HM.Sysmsg("插件服務端出錯：" .. HM.UrlDecode(data.error))
 			else
 				_HM_Secret.TableDecode(data)
 				pcall(fnCallback, data)
@@ -99,8 +99,8 @@ end
 _HM_Secret.PostNew = function()
 	local frm = _HM_Secret.eFrame
 	if not frm then
-		local nMaxLen, szFormatLen = 198, "字数：%d/%d"
-		frm = HM.UI.CreateFrame("HM_Secret_Post", { close = false, w = 380, h = 360, title = "写下您的小秘密", drag = true })
+		local nMaxLen, szFormatLen = 198, "字數：%d/%d"
+		frm = HM.UI.CreateFrame("HM_Secret_Post", { close = false, w = 380, h = 360, title = "寫下您的小秘密", drag = true })
 		frm:Append("Text", "Text_Length", { txt = szFormatLen:format(0, nMaxLen), x = 0, y = 0, font = 27 })
 		frm:Append("WndEdit", "Edit_Content", { x = 0, y = 28, limit = nMaxLen, w = 290, h = 140, multi = true }):Change(function(szText)
 			frm:Fetch("Text_Length"):Text(string.format(szFormatLen, string.len(szText), nMaxLen))
@@ -121,7 +121,7 @@ _HM_Secret.PostNew = function()
 			frame.bSecret = true
 		end
 		-- buttons
-		frm:Append("WndButton", "Btn_Submit", { txt = "发布", x = 45, y = 180 }):Click(function()
+		frm:Append("WndButton", "Btn_Submit", { txt = "發布", x = 45, y = 180 }):Click(function()
 			local szContent = frm:Fetch("Edit_Content"):Text()
 			_HM_Secret.RemoteCall("post", { c = szContent }, function(data)
 				if not data then
@@ -139,7 +139,7 @@ _HM_Secret.PostNew = function()
 		frm:Append("WndButton", "Btn_Cancel", { txt = "取消", x = 145, y = 180 }):Click(function()
 			frm:Toggle(false)
 		end)
-		frm:Append("Text", { txt = "提示：发出的秘密只有自己和好友能看到，并且没有人能知道谁发布的。", x = 0, y = 214, font = 47, multi = true, w = 290, h = 50 })
+		frm:Append("Text", { txt = "提示：發出的秘密只有自己和好友能看到，幷且沒有人能知道誰發布的。", x = 0, y = 214, font = 47, multi = true, w = 290, h = 50 })
 		_HM_Secret.eFrame = frm
 	end
 	if _HM_Secret.vFrame then
@@ -259,16 +259,16 @@ _HM_Secret.ShowOne = function(data)
 	local nW, nH = hC:GetAllItemSize()
 	hC:SetRelPos((680 - nW) / 2, (100 - nH) / 2)
 	hC:GetParent():FormatAllItemPos()
-	frm:Fetch("Text_Time"):Text(_HM_Secret.FormatTime(data.time_post) .. "，" .. data.cnum .. "条评论"):Toggle(true)
+	frm:Fetch("Text_Time"):Text(_HM_Secret.FormatTime(data.time_post) .. "，" .. data.cnum .. "條評論"):Toggle(true)
 	frm.bForward = data.forward
 	if data.forward then
-		frm:Fetch("Edit_Comment"):Text("转发的秘密不可评论"):Enable(false):Toggle(true)
+		frm:Fetch("Edit_Comment"):Text("轉發的秘密不可評論"):Enable(false):Toggle(true)
 	else
 		frm:Fetch("Edit_Comment"):Text(frm.ctip):Enable(true):Font(108):Toggle(true)
 	end
 	frm:Fetch("Btn_Comment"):Enable(data.forward == false):Toggle(true)
-	frm:Fetch("Btn_Laud"):Text("赞(" .. data.znum .. ")"):Enable(data.lauded == false):Toggle(true)
-	frm:Fetch("Btn_Hiss"):Text("嘘(" .. data.xnum .. ")"):Enable(data.hiss == false):Toggle(true)
+	frm:Fetch("Btn_Laud"):Text("贊(" .. data.znum .. ")"):Enable(data.lauded == false):Toggle(true)
+	frm:Fetch("Btn_Hiss"):Text("噓(" .. data.xnum .. ")"):Enable(data.hiss == false):Toggle(true)
 	-- show comments
 	local hnd =frm:Fetch("Handle_Comment")
 	hnd:Raw():Clear()
@@ -290,13 +290,13 @@ _HM_Secret.ReadOne = function(dwID)
 	local frm = _HM_Secret.vFrame
 	if not frm then
 		local me = GetClientPlayer()
-		frm = HM.UI.CreateFrame("HM_Secret_View", { close = false, w = 770, h = 430, title = "阅读秘密", drag = true })
+		frm = HM.UI.CreateFrame("HM_Secret_View", { close = false, w = 770, h = 430, title = "閱讀秘密", drag = true })
 		frm.name = me.szName .. "-" .. me.dwID
-		frm:Append("Image", { x = 0, y = 130, w = 680, h = 3 }):File("ui\\Image\\Minimap\\MapMark.UITex", 65)		
+		frm:Append("Image", { x = 0, y = 130, w = 680, h = 3 }):File("ui\\Image\\Minimap\\MapMark.UITex", 65)
 		frm:Append("Handle3", "Handle_Content", { x = 0, y = 0, w = 680, h = 100 })
 		frm:Append("Text", "Text_Time", { x = 0, y = 100 })
 		frm:Append("WndEdit", "Edit_Comment", { x = 160, y = 100, w = 296, h = 25, limit = 60 })
-		frm:Append("WndButton", "Btn_Comment", { txt = "发表", x = 480, y = 100, w = 70, h = 26 }):Click(function()
+		frm:Append("WndButton", "Btn_Comment", { txt = "發表", x = 480, y = 100, w = 70, h = 26 }):Click(function()
 			local szContent = frm:Fetch("Edit_Comment"):Text()
 			if szContent == frm.ctip then
 				return
@@ -308,13 +308,13 @@ _HM_Secret.ReadOne = function(dwID)
 			end
 			_HM_Secret.RemoteCall("comment", { d = frm.id, o = frm.name, c = szContent, r = szRealName }, _HM_Secret.ShowOne)
 		end)
-		frm:Append("WndButton", "Btn_Laud", { txt = "赞(99)", x = 550, y = 100, w = 70, h = 26 }):Click(function()
+		frm:Append("WndButton", "Btn_Laud", { txt = "贊(99)", x = 550, y = 100, w = 70, h = 26 }):Click(function()
 			_HM_Secret.RemoteCall("laud", { d = frm.id, o = frm.name }, function(data)
 				_HM_Secret.ShowOne(data)
 				_HM_Secret.PostNotify(frm.id, nil, true)
 			end)
 		end)
-		frm:Append("WndButton", "Btn_Hiss", { txt = "嘘(0)", x = 620, y = 100, w = 60, h = 26, font = 166 }):Click(function()
+		frm:Append("WndButton", "Btn_Hiss", { txt = "噓(0)", x = 620, y = 100, w = 60, h = 26, font = 166 }):Click(function()
 			_HM_Secret.RemoteCall("hiss", { d = frm.id, o = frm.name }, function(data)
 				if type(data) == "table" then
 					-- refresh
@@ -360,7 +360,7 @@ _HM_Secret.ReadOne = function(dwID)
 				return true
 			end
 		end
-		frm.ctip = "以@开头的评论则不匿名 -_-"
+		frm.ctip = "以@開頭的評論則不匿名 -_-"
 		frm:Fetch("Edit_Comment"):Raw().OnSetFocus = function()
 			if this:GetText() == frm.ctip then
 				this:SetText("")
@@ -436,17 +436,17 @@ _HM_Secret.LoadList = function()
 	_HM_Secret.handle:Clear()
 	_HM_Secret.loading:Show()
 	if IsRemotePlayer(me.dwID) then
-		return HM.Alert("跨服中，暂不支持该功能！")
+		return HM.Alert("跨服中，暫不支持該功能！")
 	end
 	_HM_Secret.RemoteCall("list", { o = me.szName .. "-" .. me.dwID }, _HM_Secret.DrawTable)
 end
 --]]
 -------------------------------------
--- 事件处理
+-- 事件處理
 -------------------------------------
 
 -------------------------------------
--- 设置界面
+-- 設置界面
 -------------------------------------
 _HM_Secret.PS = {}
 
@@ -455,12 +455,12 @@ _HM_Secret.PS.OnPanelActive = function(frame)
 	local ui, nX = HM.UI(frame), 0
 	-- buttons
 	--nX = ui:Append("WndButton", { x = 0, y = 0, txt = "刷新列表" }):Click(_HM_Secret.LoadList):Pos_()
-	--nX = ui:Append("WndButton", { x = nX, y = 0, txt = "发布秘密" }):Click(_HM_Secret.PostNew):Pos_()
+	--nX = ui:Append("WndButton", { x = nX, y = 0, txt = "發布秘密" }):Click(_HM_Secret.PostNew):Pos_()
 	-- Tips
-	ui:Append("Text", { x = nX + 10, y = 0, txt = "这不是树洞，秘密就来自你身边的朋友。", font = 27 })
-	ui:Append("Text", { x = 0, y = 378, txt = "小提示：包括插件作者在内任何人都无法知道秘密的来源，请放心发布。", font = 47 })
+	ui:Append("Text", { x = nX + 10, y = 0, txt = "這不是樹洞，秘密就來自你身邊的朋友。", font = 27 })
+	ui:Append("Text", { x = 0, y = 378, txt = "小提示：包括插件作者在內任何人都無法知道秘密的來源，請放心發布。", font = 47 })
 	-- tips
-	ui:Append("Text", { x = 10, y = 28, w = 486, h = 50, multi = true, txt = "秘密/Secret 功能已转移到微信公众号，扫描下图的二维码或微信搜索”海鳗插件“并关注即可。", font = 207 })
+	ui:Append("Text", { x = 10, y = 28, w = 486, h = 50, multi = true, txt = "秘密/Secret 功能已轉移到微信公衆號，掃描下圖的二維碼或微信搜索”海鰻插件“幷關注即可。", font = 207 })
 	ui:Append("Image", { x = 0, y = 82, w = 532, h = 168 }):File("interface\\HM\\HM_0Base\\image.UITEX", 0)
 	do return end
 	--[[
@@ -470,13 +470,13 @@ _HM_Secret.PS.OnPanelActive = function(frame)
 	win:ChangeRelation(frame, true, true)
 	Wnd.CloseWindow(fx)
 	win:SetRelPos(0, 32)
-	win:Lookup("", "Text_TimeTitle"):SetText("发布/更新")
-	win:Lookup("", "Text_ContentTitle"):SetText("内容摘要")
+	win:Lookup("", "Text_TimeTitle"):SetText("發布/更新")
+	win:Lookup("", "Text_ContentTitle"):SetText("內容摘要")
 	_HM_Secret.win = win
 	_HM_Secret.handle = win:Lookup("", "Handle_List")
 	_HM_Secret.loading = win:Lookup("", "Text_Loading")
 	-- add checkbox
-	ui:Append("WndCheckBox", { x = 206, y = 32, font = 47, txt = "在小地图显示未读通知", checked = HM_Secret.bShowButton }):Click(function(bChecked)
+	ui:Append("WndCheckBox", { x = 206, y = 32, font = 47, txt = "在小地圖顯示未讀通知", checked = HM_Secret.bShowButton }):Click(function(bChecked)
 		HM_Secret.bShowButton = bChecked
 		local btn = Station.Lookup("Normal/Minimap/Wnd_Minimap/Wnd_Over/Btn_Secret")
 		if btn then
